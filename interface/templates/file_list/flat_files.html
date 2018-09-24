@@ -1,0 +1,46 @@
+{% raw %}
+    <ul :class="['collection file-list scrollbar', {hidden: !showFileList}]">
+        <li v-if='files.length == 0'
+            class="file-item-item collection-item zero-files">
+            <div class="celebrate">
+                <ascii-icon 
+                    spin=true
+                    speed=100
+                    class="icon">party_popper</ascii-icon>
+
+                <p>All done. Fanfare!</p>
+            </div>
+        </li>
+
+        <li v-for='(file, index) in files'
+            :class="['collection-item file-list-item', { loading: loading.indexOf(file.path) > -1, showing: showing.indexOf(file.path) > -1}]"
+            :data-type="file.type">
+            <div class="file-container">
+                <div class="file-check-container">
+                    <label>
+                        <input
+                            ref='file_check'
+                            type="checkbox"
+                            @click='highlightPartialMasterCheckbox($event, file, index)'
+                            :index=index
+                            v-model='selected'
+                            :value='file' />
+                        
+                        <span class='filename-title selectable-title'>  
+                            <div class="info hidden spot">
+                                <div :data-type='file.type' class="type"></div>
+                            </div>
+                            <a href="javascript:;">
+                                <div class="filename" @click='select(file)'>{{ file.path }}</div>
+                            </a>
+                        </span>
+                    </label>
+                </div>
+                <div class="info hidden">
+                    <div :data-type='file.type' class="type"></div>
+                </div>
+
+            </div>
+        </li>
+    </ul>
+{% endraw %}

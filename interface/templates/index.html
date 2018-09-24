@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--Import materialize.css-->
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.css') }}"  media="screen,projection"/>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"  media="screen,projection"/>
+
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script type="text/javascript">
+        var CACHE = {{ cache|safe }}
+  </script>
+  {% block header %}{% endblock %}
+</head>
+<body>
+    <!-- <nav> navbar content here  </nav> -->
+
+    <ul id="slide-out" class="sidenav">
+
+        <li><div class="user-view">
+            <div class="background">
+            <!-- <img src="images/office.jpg"> -->
+            </div>
+                <!-- <a href="#user"><img class="circle" src="images/yuna.jpg"></a> -->
+                <a href="#name"><span class="white-text name">John Doe</span></a>
+                <a href="#email"><span class="white-text email">tom@jpm.com</span></a>
+            </div>
+        </li>
+
+        <li><a href="#!">Second Link</a></li>
+        <li><div class="divider"></div></li>
+
+    </ul>
+
+    <nav id='main_nav'></nav>
+
+{% raw %}
+    <div id="main">
+        <div class="header base-navigator">
+            <button @click='stepUp' class="btn btn-flat up">Up</button>
+
+            <div class="path">
+                <ul class="path-list">
+                    <li class="path-list-item drives">
+                        <span class="text">
+                            <a href='javascript:;' @click='serve("")'>Root</a>
+                        </span>
+                    </li>
+                    <li class="path-list-item" v-for='(item, index) in path'>
+                        <span class="text">
+                            <a href='javascript:;' @click='servePathAt(index, path)'>{{item}}</a>
+                        </span>
+                    </li>
+                    <li class="path-list-item info">
+                        <span class="text">
+                            <a href='javascript:;' :class='[{zero: itemCount == 0}]'>
+                                <span class="count">
+                                    <span class="value">{{ itemCount.toLocaleString() }}</span>
+                                    <span class="text">item{{ itemCount == 1?'':'s'}}</span>
+                                </span>
+                            </a>
+                        </span>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="file-view" v-if='is_file'>
+            <p>file</p>
+        </div>
+
+        <ul class="folder-list-container">
+            <li :class="['folder-list-item', {file: item[1] }]"
+                key='item[0]'
+                v-for='(item, index) in meta'>
+                <a href='javascript:;' @click='stepServe(item[0])' class="name">
+                    <span class="name">{{ item[0] }}</span>
+                    <div class="subgraph name" v-if='item[4] != undefined'>
+                        <ul>
+                            <li :class="['subgraph path-item-list', {file: item[1]}]"
+                                v-for='subitem in item[4][item[0]] ? item[4][item[0]].meta :[]'>
+                                <span class="text">{{ subitem[0] }}</span>
+                                <span class="count" v-if='subitem[1] > 0'>{{ subitem[1] }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <span class="sub-count count">{{ item[2] }}</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="footer base-navigator">
+            <span class="count">
+                <span class="value">{{ itemCount.toLocaleString() }}</span>
+                <span class="text">item{{ itemCount == 1?'':'s'}}</span>
+            </span>
+             <span class="count total-seconds">
+                <span class="value">{{ seconds.toLocaleString() }}</span>
+                <span class="text">m{{ seconds == 1?'illisecond': 's'}}</span>
+            </span>
+            <div class="right">
+                <div class="reset">
+                    <button @click='resetCache' class="reset">Reset Cache</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endraw %}
+    {% include 'js_includes.html' %}
+
+    {% block footer_js %}
+    {% endblock %}
+
+</body>
+</html>

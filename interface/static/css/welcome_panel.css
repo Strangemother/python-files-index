@@ -1,0 +1,64 @@
+.welcome-panel-container {
+    background: rgb(64, 66, 64);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    position: absolute;
+    z-index: 2;
+    color: white;
+}
+
+
+.welcome-panel {
+    margin: auto;
+    color: inherit;
+    background: #999;
+    border-radius: 5px;
+    padding: 3em 5em 4em;
+    max-width: 900px;
+}
+
+.welcome-panel h1 {
+    margin: 0;
+    padding: 0;
+}
+
+.choice {
+    display: flex;
+}
+
+.choice button {
+    color: white;
+    font-size: 1.1em;
+    background: #333;
+    padding: 0.5em 1.5em;
+    height: initial;
+    font-weight: 400;
+}
+
+.play-icon {
+    text-align: center;
+    font-size: 9em;
+}
+
+p.flow-text.welcome-text {
+    font-size: 2.1em;
+    font-weight: 100;
+    letter-spacing: 0.5px;
+    line-height: 1.4em;
+    margin: 1em 0 2em;
+}
+
+button.btn.btn-flat.yes {
+    background: #1eaf24;
+}
+
+button.btn.btn-flat.no {
+    background-color: #b12a2a;
+}
+
+.welcome-panel-container.hidden {
+    display: none;
+}

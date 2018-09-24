@@ -1,0 +1,46 @@
+{% raw %}
+<ul :class="['collection file-list-header', {loading: showLoader}]">
+    
+    <li class="collection-item file-list-item">
+        <div class="file-container">
+            <div class="file-check-container">
+                <label>
+                    <input id='master_checkbox'
+                        type="checkbox"
+                        ref='master_checkbox'
+                        @click='toggleValueDispatch'
+                        />
+                    <span>                            
+                        <div class="status-info">
+                            <div class="file-count">{{ files.length }} file<span :class='{hidden: files.length == 1}'>s</span>
+                            </div>
+                            <div :class="['new-count', {hidden: counts['??'] == 0}]">{{ counts['??'] }} new
+                                <!-- <span :class="{hidden: counts['??'] == 1}">s</span> -->
+                            </div>
+                            <div 
+                            :class="[{hidden: counts['??'] < 1}, 'staged-count']">{{ counts['M'] }} changed
+                                <!-- <span :class="{hidden: counts['M'] == 1}">s</span> -->
+                            </div>
+                        </div>
+                    </span>
+
+                    <css-loader :class='{hidden: !showLoader}'></css-loader>
+                    <div class="file-folder-toggle-container">
+                        <button 
+                            class="btn file-folder-toggle" 
+                            @click='toggleDisplayType'>
+                            <i class="material-icons">
+                                {{ showFileList? 'unfold_more': 'unfold_less' }}
+                            </i>
+                        </button>
+                    </div>
+                </label>
+            </div>
+
+            <div class="info hidden">
+                <div class="type">Type</div>
+            </div>
+        </div>
+    </li>
+</ul>
+{% endraw %}

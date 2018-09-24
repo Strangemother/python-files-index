@@ -1,0 +1,220 @@
+
+/* fallback */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/2fcrYFNaTjcS6g4U3t-Y5ZjZjT5FdEJ140U2DJYC3mY.woff2) format('woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+
+nav#main_nav {
+    background: #292929;
+    box-shadow: none;
+    padding: 0 1em;
+}
+
+
+.folder-list-item a.name {
+    font-size: 1.5rem;
+    background: #eeeeee;
+    min-width: 7rem;
+    display: flex;
+    margin: 0.6rem;
+    padding: 0.3em 0.8rem;
+    cursor: pointer;
+    color: inherit;
+    align-items: center;
+    /* flex-wrap: nowrap; */
+    white-space: nowrap;
+    /* text-overflow: ellipsis; */
+    /* overflow: hidden; */
+    /* width: 100%; */
+}
+
+li.folder-list-item {
+    overflow: hidden;
+}
+.path li.path-list-item {
+    /* border: solid 1px red; */
+    display: flex;
+    font-size: inherit;
+}
+
+ul.path-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.path .path-list-item > span.text {
+    background: #e7e7e7;
+    /* padding: 0.1rem 0.5rem; */
+    margin: 2px;
+}
+
+.header.base-navigator {
+    display: inline-flex;
+    font-size: 1.4rem;
+    padding: 0.4rem 0;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.base-navigator {
+    background: #d3d3d3;
+    display: flex;
+    align-items: center;
+}
+
+li.folder-list-item.file a.name {
+    background: #bdbdbd;
+}
+
+.path .path-list-item span.text a {
+    font-size: inherit;
+    color: inherit;
+    padding: .1em .5em;
+}
+
+
+.path .path-list-item span.text a:hover, .path .path-list-item span.text a:focus {
+    outline: none;
+    background: white;
+}
+
+li.folder-list-item li:hover a {
+    background: #e0e0e0;
+}
+
+.folder-list-item a.name:hover {
+    background: #c8c8c8;
+}
+
+a.name {}
+
+.folder-list-item.file a.name:hover {
+    background: #939393;
+}
+
+ul.folder-list-container.horiz {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: baseline;
+}
+
+.horiz li.folder-list-item {
+    /* flex-grow: 1; */
+}
+
+
+.header.base-navigator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+
+.footer.base-navigator {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 1.1rem;
+    justify-content: center;
+    background: #222;
+    color: #e4e4e4;
+}
+
+
+.footer.base-navigator .count {
+    margin: 0.2rem 0.5rem 0.5rem;
+}
+
+.header.base-navigator button {
+    font-size: inherit;
+}
+
+.header .path {
+    margin-left: 0.5rem;
+}
+
+li.path-list-item:after {
+    content: '/';
+    display: flex;
+    justify-self: center;
+    padding: 0.2rem 0.1em 0rem;
+    color: #AAA;
+}
+
+a {}
+
+li.path-list-item.info, .path li.path-list-item.info {
+    color: #959595;
+    background: transparent;
+}
+
+li.path-list-item.info:after {
+    content: '';
+}
+
+.path .path-list-item span.text a.zero {
+    color: #bfbfbf;
+    background: transparent;
+}
+
+.path .path-list-item.info > span.text {
+    background: transparent;
+}
+
+ul.folder-list-container {
+    margin-bottom: 10em;
+}
+
+
+.file span.sub-count.count {
+    display: none;
+}
+
+span.sub-count.count {
+    display: inline-flex;
+    margin-left: auto;
+    font-size: 0.9em;
+    justify-self: center;
+}
+
+li.subgraph.path-item-list {
+    color: #999;
+    font-size: 0.8em;
+    margin-left: 0.1rem;
+}
+
+li.subgraph.path-item-list:before {
+    content: '/';
+    display: inline-flex;
+    padding: 0 0em 0 0.3rem;
+    color: #CCC;
+    font-weight: 800;
+    font-size: 0.9em;
+}
+
+
+.folder-list-item a.name > * {display: flex;}

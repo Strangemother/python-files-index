@@ -1,0 +1,100 @@
+{% raw %}
+    
+    <ul :class="['collection file-list folder-list scrollbar', {hidden: !showFolderList}]">
+        <li v-if='files.length == 0'
+            class="file-item-item collection-item zero-files">
+            <div class="celebrate">
+                <ascii-icon 
+                    spin=true
+                    speed=100
+                    class="icon">party_popper</ascii-icon>
+                <p>All done. Fanfare!</p>
+            </div>
+        </li>
+
+        <li v-for='(folder, index) in folders'
+            :class="['collection-item file-list-item']"
+            data-type="folder">
+
+            <div :class="['file-container', { collapse: folder.collapse }]">
+                <div class="file-check-container">
+                    <label>
+                         <input
+                            ref='file_check'
+                            type="checkbox"
+                            class='folder-check'
+                            @click='highlightFolderCheckbox($event, folder, index)'
+                            :index=index
+                            :value='folder' />
+                                           
+                        <span class='folder-title selectable-title'>  
+                            <div class="info hidden spot">
+                                <div data-type='folder' class="type"></div>
+                            </div>
+
+                            <!-- File select for diff view. -->
+                            <a href="javascript:;">
+                                <div :class="['filename', { collapse: folder.collapse }]" 
+                                    @click='toggleFolder(folder, index)'>
+                                        <span class="count">{{ folder.files.length}}</span>
+                                        <span class="folder-name">{{ folder.name }}</span>
+                                    </div>
+                            </a>
+                        </span>
+
+                    </label>
+
+                   
+                    <ul :class="['collection folder-list scrollbar', { collapse: folder.collapse }]">
+                        <li v-if='files.length == 0'
+                            class="file-item-item collection-item zero-files">
+                            <div class="celebrate">
+                                <ascii-icon 
+                                    spin=true
+                                    speed=100
+                                    class="icon">party_popper</ascii-icon>
+                                <p>All done. Fanfare!</p>
+                            </div>
+                        </li>
+                        
+                        <li v-for='(file, index) in folder.files'
+                            :class="['collection-item file-list-item', { loading: loading.indexOf(file.path) > -1, showing: showing.indexOf(file.path) > -1}]"
+                            :data-type="file.type">
+                            <div class="file-container">
+                                <div class="file-check-container">
+                                    <label>
+                                        <input
+                                            ref='file_check'
+                                            type="checkbox"
+                                            @click='highlightPartialMasterCheckbox($event, file, index)'
+                                            :index=index
+                                            v-model='selected'
+                                            :value='file' />
+                                        
+                                        <span class='filename-title'>  
+                                            <div class="info hidden spot">
+                                                <div :data-type='file.type' class="type"></div>
+                                            </div>
+                                            <a href="javascript:;">
+                                                <div class="filename" @click='select(file)'>{{ file.name }}</div>
+                                            </a>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="info hidden">
+                                    <div :data-type='file.type' class="type"></div>
+                                </div>
+
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="info hidden">
+                    <div data-type='folder' class="type"></div>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+{% endraw %}
