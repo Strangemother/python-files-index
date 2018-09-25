@@ -21,16 +21,21 @@ var app = new Vue({
         , meta: [
             false
         ]
+        , sysname: CACHE.sysname
         , path: []
         , itemCount: 12
         , seconds: 1
         , is_file: false
+        , lastSearch: undefined
     }
 
     , mounted(){
-        this.serve()
+        if(INIT_DATA != undefined) {
+            this.serve(undefined, false, INIT_DATA)
+        } else {
+            this.serve()
+        }
     }
-
     , methods: {
 
         stepUp() {
@@ -60,8 +65,9 @@ var app = new Vue({
             localCache = {}
         }
 
-        , serve(path, pushUrl=true) {
+        , serve(path, pushUrl=true, data=undefined) {
             this.startTime = +(new Date)
+
             let render = (function(){
                 let self = this.self
                     , path = this.path
@@ -91,6 +97,7 @@ var app = new Vue({
                                 this.serveMeta(path)
                             }.bind(this))
                         }
+
                         this.seconds = this.endTime - this.startTime
                     }.bind(self))
                 }
@@ -102,7 +109,11 @@ var app = new Vue({
                 console.log('rendering from cache', path)
                 render()(localCache[path], false)
             } else {
-                serverPost('/files/', { path }, render())
+                if(data != undefined) {
+                    render()(data, false)
+                } else {
+                    serverPost('/files/', { path }, render())
+                }
             }
 
         }
@@ -114,8 +125,64 @@ var app = new Vue({
             }.bind(this))
         }
 
+        , search(query) {
+            serverPost('/search/', { query }, function(d){
+                Vue.set(this, 'lastSearch', d)
+            }.bind(this))
+        }
+
         , servePathAt(index, path) {
             this.serve(path.slice(0, index+1).join('/'))
         }
+    }
+})
+
+var search = new Vue({
+    el: '#search'
+    , data: {
+        items: []
+        , query: ""
+        , size_str: "0.0mb"
+        , total: -1
+        , total_size: 0
+    }
+    , methods:{
+        searchKeydown(ev){
+            // let data = {
+            //     query: this.$refs.searchfield.value
+            //     , word: 'any word'
+            //     , partial: 'any word'
+            //     , without_results: 'any word'
+            // }
+
+            // serverPost('/search/', data, this.keydownHandler)
+        }
+
+        , keydownHandler(result){
+
+        }
+
+        , searchKeyup(ev){
+            let val =this.$refs.searchfield.value
+            if( val.length < 4) return
+            let data = {
+                query: val
+                , word: 'any word'
+                , partial: 'any word'
+                , without_results: 'any word'
+            }
+
+            if(ev.keyCode == 13) {
+                data.without_results = undefined
+            }
+            serverPost('/search/', data, this.keyupHandler)
+        }
+
+        , keyupHandler(result){
+            for(let key in result) {
+                Vue.set(this, key, result[key])
+            }
+        }
+
     }
 })

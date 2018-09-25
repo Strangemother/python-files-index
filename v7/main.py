@@ -453,9 +453,23 @@ class FileWalker(object):
         print('Found {} file totaling {}'.format(len(res), res.size))
         return res
 
-    def search(self, string):
+    def query(self, string):
         '''Like find but as a string'''
         return self.find(*string.split(' '))
+
+    def search(self, partial_string):
+        # keys = db.walkers[1][0][1].keys()
+        walker = self.walkers[1]
+        graph = walker.graph['lower']
+        keys = graph.keys()
+        found = tuple(x for x in keys if x.find(partial_string) > -1)
+        rows = set()
+        for key in found:
+            rows = rows.union(graph[key])
+
+        res = FileRows(self.walkers[0].row[rows], partial_string)
+        return res
+
 
     def files(self, path, sep=None):
         return self.walkers[0].path_files(path, sep)

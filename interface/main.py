@@ -28,6 +28,27 @@ UNDEFINED = {}
 ROOT = os.path.dirname(__file__)
 DATA = UNDEFINED
 
+import platform
+import os
+import socket
+
+
+def sysname():
+    n1 = platform.node()
+    n2 = socket.gethostname()
+    n3 = os.environ["COMPUTERNAME"]
+    if n1 == n2 == n3:
+        return n1
+    elif n1 == n2:
+        return n1
+    elif n1 == n3:
+        return n1
+    elif n2 == n3:
+        return n2
+    else:
+        raise Exception("Computernames are not equal to each other")
+
+
 def main(root_path=None, persistent_name=None):
     '''Run the dlask application, checking for a persistent file.'''
     app.run(debug=True, host='0.0.0.0', port=8007)
@@ -35,14 +56,24 @@ def main(root_path=None, persistent_name=None):
 
 @app.context_processor
 def inject_persistent():
-    return dict(cache={})
+    return dict(cache={
+            'sysname':sysname(),
+        })
 
 
 @app.route("/")
-def index_page():
+@app.route("/<path:path>")
+def index_page(path=None):
     '''Flask method for the index.html rendered template.
     '''
-    return render_template('index.html', init_data=DATA)
+    init_data = ''
+    if path is not None:
+        init_data = get_graph_files(path)
+        init_data = json.dumps(init_data)
+    return render_template('index.html',
+        init_data=init_data,
+        path=path,
+        )
 
 meta_cache = {}
 from flask import g
@@ -54,6 +85,10 @@ def get_files(path=None):
     if path is None:
         path = request.form.get('path', path)
 
+    res = get_graph_files(path)
+    return jsonify(res)
+
+def get_graph_files(path=None):
     st = time.time()
     res = meta_cache.get(path, None)
     if res is None:
@@ -69,7 +104,7 @@ def get_files(path=None):
         print('\nno files')
 
     res['time'] = time.time() - st
-    return jsonify(res)
+    return res
 
 
 @app.route("/files-meta/", methods=['GET', 'POST'], endpoint='metae')
@@ -80,16 +115,14 @@ def get_files_meta(path=None):
 from operator import itemgetter
 import time
 
+DATA = filer.main()
+
 def get_graph(path=None, meta=False, meta_only=False, graph=None, count=False):
     '''Flask method for the index.html rendered template.
     '''
 
-    global DATA
-    if DATA == UNDEFINED:
-        # recache
-        DATA = filer.main()
-
     if path is None:
+        # root address for initial request
         graph =  graph or DATA.top()
     else:
         if path.endswith('/'):
@@ -104,7 +137,7 @@ def get_graph(path=None, meta=False, meta_only=False, graph=None, count=False):
 
     try:
 
-        if meta == True:
+        if meta is True:
             meta_keys = ()
             g_keys = set(graph.keys()) - hidden_keys
             for x in g_keys:
@@ -182,13 +215,60 @@ def perform_scan():
     global DATA
     DATA = filer.main(False)
     DATA.save('a','b')
-
-    data = {
-            'items': dict(name='foo'),
-
-        }
-
+    data = { 'items': dict(name='foo'), }
     return jsonify(data)
+
+
+query_cache = {}
+
+@app.route("/search/", methods=['GET', 'POST'])
+def perform_search():
+    '''Flask method for the index.html rendered template.
+    '''
+    query = request.form.get('query')
+    words = request.form.get('word', None) is not None
+    partial = request.form.get('partial', None) is not None
+    start = request.form.get('start', None)
+    limit = request.form.get('limit', None)
+    without_results = request.form.get('without_results', None) is not None
+
+    qs = '-'.join(map(str, (query, words, partial, limit, without_results)))
+    if qs in query_cache:
+        return query_cache[qs]
+
+
+    res = 0 if without_results else ()
+    if partial:
+        rows = DATA.search(query)
+        if without_results:
+            res += len(rows)
+        else:
+            for row in rows:
+                res += ( (row.name, row.path.split(os.path.sep), row.size),)
+
+    if words:
+        rows = DATA.query(query)
+        if without_results:
+            res += len(rows)
+        else:
+            for row in rows:
+                res += ( (row.name, row.path.split(os.path.sep), row.size),)
+
+    len_res = res if without_results else len(res)
+    if limit is not None:
+        res = res[int(start) if start else 0: int(limit)]
+
+    query_cache[qs] = jsonify({
+            'query': query,
+            'limit': int(limit),
+            'start': start,
+            'items': [] if without_results else res,
+            'total': res if without_results else len_res,
+            'total_size': rows.total_size(),
+            'size_str': rows.size,
+        })
+
+    return query_cache[qs]
 
 
 if __name__ == '__main__':

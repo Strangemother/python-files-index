@@ -9,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script type="text/javascript">
         var CACHE = {{ cache|safe }}
+        var INIT_DATA = (function(){ return {{ init_data|safe }} })()
   </script>
   {% block header %}{% endblock %}
 </head>
@@ -35,6 +36,14 @@
     <nav id='main_nav'></nav>
 
 {% raw %}
+    <div id="search">
+        <div class="input-field">
+            <input type="text" ref='searchfield'
+                v-on:keydown='searchKeydown'
+                v-on:keyup='searchKeyup'>
+        </div>
+        <div class="output"><span class="count">{{total}}</span></div>
+    </div>
     <div id="main">
         <div class="header base-navigator">
             <button @click='stepUp' class="btn btn-flat up">Up</button>
@@ -43,9 +52,10 @@
                 <ul class="path-list">
                     <li class="path-list-item drives">
                         <span class="text">
-                            <a href='javascript:;' @click='serve("")'>Root</a>
+                            <a href='javascript:;' @click='serve("")'>{{ sysname }}</a>
                         </span>
                     </li>
+
                     <li class="path-list-item" v-for='(item, index) in path'>
                         <span class="text">
                             <a href='javascript:;' @click='servePathAt(index, path)'>{{item}}</a>
